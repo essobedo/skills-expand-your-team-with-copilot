@@ -569,6 +569,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-section">
+        <span class="share-label">Share:</span>
+        <button class="share-button share-copy" data-activity="${name}" title="Copy link to clipboard">🔗</button>
+        <button class="share-button share-email" data-activity="${name}" title="Share via email">✉️</button>
+        <button class="share-button share-whatsapp" data-activity="${name}" title="Share via WhatsApp">💬</button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +592,31 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add share button handlers
+    const getActivityShareUrl = () =>
+      `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(name)}`;
+
+    activityCard.querySelector(".share-copy").addEventListener("click", () => {
+      navigator.clipboard.writeText(getActivityShareUrl()).then(() => {
+        showMessage("Link copied to clipboard!", "success");
+      }).catch(() => {
+        showMessage("Could not copy link. Please copy it manually.", "error");
+      });
+    });
+
+    activityCard.querySelector(".share-email").addEventListener("click", () => {
+      const subject = encodeURIComponent(`Check out this activity: ${name}`);
+      const body = encodeURIComponent(`Hi!\n\nI thought you might be interested in this activity at Mergington High School:\n\n${name}\n${details.description}\n\nSchedule: ${formatSchedule(details)}\n\nCheck it out here: ${getActivityShareUrl()}`);
+      const anchor = document.createElement("a");
+      anchor.href = `mailto:?subject=${subject}&body=${body}`;
+      anchor.click();
+    });
+
+    activityCard.querySelector(".share-whatsapp").addEventListener("click", () => {
+      const text = encodeURIComponent(`Check out this activity at Mergington High School: *${name}*\n${details.description}\nSchedule: ${formatSchedule(details)}\n${getActivityShareUrl()}`);
+      window.open(`https://wa.me/?text=${text}`, "_blank");
+    });
 
     activitiesList.appendChild(activityCard);
   }
