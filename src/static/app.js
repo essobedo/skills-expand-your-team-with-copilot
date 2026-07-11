@@ -489,8 +489,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentDifficulty === "") {
         // "All Levels" selected: show all activities
       } else {
-        // A specific difficulty is selected: only show activities with that difficulty
-        if (details.difficulty !== currentDifficulty) {
+        // A specific difficulty is selected: show activities with that difficulty
+        // or activities with no difficulty set (they are open to all levels)
+        if (details.difficulty && details.difficulty !== currentDifficulty) {
           return;
         }
       }
